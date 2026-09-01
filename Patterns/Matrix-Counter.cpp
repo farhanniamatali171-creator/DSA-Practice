@@ -25,3 +25,9 @@ int num=1;
     
     return 0;
 }
+/*
+Output:
+123
+456
+789
+*/
