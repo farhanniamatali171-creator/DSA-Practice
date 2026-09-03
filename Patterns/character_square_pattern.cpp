@@ -23,3 +23,10 @@ int m= 4;
     
     return 0;
 }
+/*
+Output:
+ABCD
+ABCD
+ABCD
+ABCD
+*/
