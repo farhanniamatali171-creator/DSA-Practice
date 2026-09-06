@@ -16,7 +16,7 @@ int n=4;
   {
     for (int j = 0; j <i; j++)
     {
-      cout<<"  ";
+      cout<<" ";
     
     }
      for (int j= 0;j<n- i ; j++)
@@ -34,3 +34,10 @@ int n=4;
     
     return 0;
 }
+/*
+Output:
+A A A A 
+ B B B 
+  C C 
+   D 
+*/
