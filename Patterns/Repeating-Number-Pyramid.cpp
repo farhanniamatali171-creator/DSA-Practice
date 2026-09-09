@@ -1,29 +1,35 @@
 #include<iostream>
-#include<cstdlib> 
+#include<cstdlib> 
 
 using namespace std;
 
 int main(){
-  
+  
 int n=4;
 
 
-  for (int i = 1; i <= n; i++)
-  {
-  int m= 3;
-    for (int j = 1; j <= i; j++)
-    {
-    cout<< i;
- 
-    
-    }
-    cout<<endl;
-    
-  }
-  
-  
-    system("pause"); 
-    
-    return 0;
+  for (int i = 1; i <= n; i++)
+  {
+  int m= 3;
+    for (int j = 1; j <= i; j++)
+    {
+    cout<< i;
+ 
+    
+    }
+    cout<<endl;
+    
+  }
+  
+  
+    system("pause"); 
+    
+    return 0;
 }
-title
+/*
+Output:
+1
+22
+333
+4444
+*/
