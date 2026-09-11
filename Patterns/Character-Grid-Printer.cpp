@@ -26,3 +26,9 @@ int m= 3;
     
     return 0;
 }
+/*
+Output:
+ABC
+DEF
+GHI
+*/
