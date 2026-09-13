@@ -21,3 +21,10 @@ int main() {
 
     return 0;
 }
+/*
+Output:
+1
+12
+123
+1234
+*/
