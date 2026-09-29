@@ -1,11 +1,11 @@
 #include <iostream>
 using namespace std;
 
-
+//check prime numbers from 1 to num
 bool isPrime(int num) {
     if (num <= 1) return false; 
     
-
+//condition  
     for (int i = 2; i * i <= num; i++) {
         if (num % i == 0) {
             return false; 
@@ -14,7 +14,7 @@ bool isPrime(int num) {
     return true; 
 }
 
-
+//print prime number 
 void printPrimes(int n) {
     cout << "Primes from 1 to " << n << ": ";
     for (int i = 1; i <= n; i++) {
