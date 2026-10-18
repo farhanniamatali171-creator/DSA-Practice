@@ -1,430 +1,459 @@
-    #include <iostream>
-    #include <cstdlib>
 
-    struct Node {
-        std::string data;
-        Node* next;
-        Node* prev;
-        Node(std::string value) { data = value; next = nullptr; prev = nullptr;}
-    };
+#include <iostream>
+#include <string>
 
-    class doubly_Linked_List {
-    public:
-        Node* head;
+struct Node {
+    std::string data;
+    Node* next;
+    Node* prev;
+    Node(std::string value){
+        data = value;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
 
-        doubly_Linked_List() {
-            head = nullptr;
+class DoublyLinkedList {
+public:
+    Node* head;
+
+    DoublyLinkedList() {
+        head = nullptr;
+    }
+
+ void insertAtEnd(std::string value) {
+    Node* newNode = new Node(value);
+     if (head == nullptr) {
+        head = newNode;
+        return;
+      }
+    Node* current = head;
+    while (current->next != nullptr) {
+        current = current->next;
+     }
+    current->next = newNode;
+    newNode->prev = current;
+    }
+
+    void display() {
+        Node* current = head;
+        while (current != nullptr) {
+            std::cout << current->data << " ";
+            current = current->next;
         }
-        
-        void insertAtEnd(std::string value) {
-            Node* newNode = new Node(value);
-            
-            if (head == nullptr) {
-                head = newNode;
-                return;
-            }
-            Node* curr = head;
-            while (curr->next != nullptr) {
-            curr = curr->next;
-            }
-            curr->next = newNode;
-            newNode->prev = curr;       
-        }
+        std::cout << "\n";
+    }
 
-        void display() {
-            Node* curr = head;
-            while (curr != nullptr) {
-            std::cout << curr->data << " ";
-            curr = curr->next;
+ void swapFirstAndLast() {
+    if (head == nullptr || head->next == nullptr) {
+        return;
+     }
+      Node* last = head;
+       while (last->next != nullptr) {
+          last = last->next;
+        }
+      std::string temp = head->data;
+      head->data = last->data;
+      last->data = temp;
+    }
+
+ void move() {
+        int choice;
+        std::cout << "1 - Forward\n";
+        std::cout << "2 - Backward\n";
+        std::cout << "Enter choice: ";
+        std::cin >> choice;
+
+        if (head == nullptr) {
+           std::cout << "List is empty.\n";
+           return;
+        }
+        if (choice == 1) {
+            Node* current = head;
+            while (current != nullptr) {
+              std::cout << current->data << " ";
+              current = current->next;
             }
             std::cout << "\n";
         }
+        else if (choice == 2) {
+            Node* current = head;
 
-        void swap(){
-
-            if (head==nullptr || head->next==nullptr)
-            {
-                return;
+          while (current->next != nullptr) {
+             current = current->next;
             }
-            
-            
-            Node* last=head;
-            while (last->next!=nullptr){
-
-            last=last->next;
+            while (current != nullptr) {
+                std::cout << current->data << " ";
+                current = current->prev;
             }
-            std:: string temp=head->data;
-            head->data=last->data;
-            last->data=temp;
-            
+            std::cout << "\n";
         }
-
-        void move(){
-            int choice;
-            std::cout<<"\nEnter choice :\n1-Forward\n2-Backward\n";
-            std::cin>>choice;
-            Node* curr=head;
-            Node* last=head;
-        
-            //forward
-            if (choice==1) {
-                if (head == nullptr) {
-                    std::cout << "List is empty!\n";
-                    return;
-                }
-                while (curr!=nullptr){
-                std::cout<<curr->data<<"   ";
-                curr=curr->next;
-            }
-            
-            }
-            else if (choice==2){
-            if (last == nullptr) {
-                std::cout << "List is empty!\n";
-                return;
-            }
-            while (last->next!=nullptr){
-            last=last->next;
-            }
-            while (last!=nullptr){
-                std::cout<<last->data<<"   ";
-                last=last->prev;
-            }
-            
+        else {
+            std::cout << "Wrong choice. Enter 1 or 2.\n";
         }
-            else{
-                std::cout<<"Wrong Choice! must e 1 or 2";
-            }
+    }
 
+  void rearrangeSeats() {
+      if (head == nullptr || head->next == nullptr) {
+          return;
         }
-        void rearrangeSeats() {
-        if (head == nullptr || head->next == nullptr) {
-            return;
-        }
-
         int count = 0;
-        Node* curr = head;
+        Node* current = head;
 
-        while (curr != nullptr) {
-            count++;
-            curr = curr->next;
+       while (current != nullptr) {
+          count++;
+          current = current->next;
         }
-
         Node* left = head->next;
         Node* right = head;
 
         while (right->next != nullptr) {
             right = right->next;
         }
-
         right = right->prev;
+        int leftPosition = 2;
+        int rightPosition = count - 1;
 
-        int leftPos = 2;
-        int rightPos = count - 1;
-
-        while (leftPos < rightPos) {
+        while (leftPosition < rightPosition) {
             std::string temp = left->data;
             left->data = right->data;
-            right->data = temp;
+            right->data = temp;  
 
-            leftPos += 2;
-            rightPos -= 2;
+            leftPosition += 2;
+            rightPosition -= 2;
 
-            if (leftPos >= rightPos) {
+            if (leftPosition >= rightPosition) {
                 break;
             }
-
             left = left->next->next;
             right = right->prev->prev;
         }
     }
-        
-    };
 
-
-    struct Item {
-        std::string name;
-        Item* next;
-    };
-
-    struct Section {
-        std::string name;
-        Item* items;
-        Section* next;
-    };
-
-    struct Store {
-        std::string name;
-        std::string city;
-        Section* sections;
-        Store* next;
-    };
-
-    class InventoryManagement {
-    public:
-        Store* head;
-
-        InventoryManagement() {
-            head = nullptr;
+    ~DoublyLinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* nextNode = current->next;
+            delete current;
+            current = nextNode;
         }
+    }
+};
 
+struct Item {
+    std::string name;
+    Item* next;
+
+    Item(std::string itemName) {
+        name = itemName;
+        next = nullptr;
+    }
+};
+
+struct Section {
+    std::string name;
+    Item* items;
+    Section* next;
+
+    Section(std::string sectionName) {
+        name = sectionName;
+        items = nullptr;
+        next = nullptr;
+    }
+};
+
+struct Store {
+    std::string name;
+    std::string city;
+    Section* sections;
+    Store* next;
+
+    Store(std::string storeName, std::string storeCity) {
+        name = storeName;
+        city = storeCity;
+        sections = nullptr;
+        next = nullptr;
+    }
+};
+
+class InventoryManagement {
+public:
+    Store* head;
+    InventoryManagement() {
+        head = nullptr;
+    }
     void addStore(std::string name, std::string city) {
-        Store* newStore = new Store;
-
-        newStore->name = name;
-        newStore->city = city;
-        newStore->sections = nullptr;
-        newStore->next = nullptr;
-
+        Store* newStore = new Store(name, city);
         if (head == nullptr) {
             head = newStore;
         }
         else {
-            Store* curr = head;
-            while (curr->next != nullptr) {
-                curr = curr->next;
+            Store* current = head;
+
+            while (current->next != nullptr) {
+                current = current->next;
             }
-            curr->next = newStore;
+
+            current->next = newStore;
         }
     }
 
     void addSection(std::string storeName, std::string sectionName) {
-        Store* s = head;
+        Store* store = head;
 
-        while (s != nullptr && s->name != storeName) {
-            s = s->next;
+        while (store != nullptr && store->name != storeName) {
+            store = store->next;
         }
-        if (s == nullptr) {
-            std::cout << "Store not found!\n";
+
+        if (store == nullptr) {
+            std::cout << "Store not found.\n";
             return;
         }
-        Section* sec = new Section;
-        sec->name = sectionName;
-        sec->items = nullptr;
-        sec->next = nullptr;
+        Section* newSection = new Section(sectionName);
 
-        if (s->sections == nullptr) {
-            s->sections = sec;
+        if (store->sections == nullptr) {
+            store->sections = newSection;
         }
         else {
-            Section* curr = s->sections;
-            while (curr->next != nullptr) {
-                curr = curr->next;
+            Section* current = store->sections;
+
+            while (current->next != nullptr) {
+                current = current->next;
             }
-            curr->next = sec;
+            current->next = newSection;
         }
     }
 
     void addItem(std::string storeName, std::string sectionName,
-                std::string itemName) {
-        Store* s = head;
+                 std::string itemName) {
+        Store* store = head;
 
-        while (s != nullptr && s->name != storeName) {
-            s = s->next;
+        while (store != nullptr && store->name != storeName) {
+            store = store->next;
         }
-        if (s == nullptr) {
-            std::cout << "Store not found!\n";
+        if (store == nullptr) {
+            std::cout << "Store not found.\n";
             return;
         }
-        Section* sec = s->sections;
-        while (sec != nullptr && sec->name != sectionName) {
-            sec = sec->next;
+        Section* section = store->sections;
+
+        while (section != nullptr && section->name != sectionName) {
+            section = section->next;
         }
 
-        if (sec == nullptr) {
-            std::cout << "Section not found!\n";
+        if (section == nullptr) {
+            std::cout << "Section not found.\n";
             return;
         }
-        Item* item = new Item;
-        item->name = itemName;
-        item->next = nullptr;
-        if (sec->items == nullptr) {
-            sec->items = item;
+        Item* newItem = new Item(itemName);
+
+        if (section->items == nullptr) {
+            section->items = newItem;
         }
         else {
-            Item* curr = sec->items;
-            while (curr->next != nullptr) {
-                curr = curr->next;
+            Item* current = section->items;
+
+            while (current->next != nullptr) {
+                current = current->next;
             }
-            curr->next = item;
+            current->next = newItem;
         }
     }
 
-    void removeItem(std::string storeName, std::string sectionName,std::string itemName) {
-        Store* s = head;
-        while (s != nullptr && s->name != storeName) {
-            s = s->next;
+    void removeItem(std::string storeName, std::string sectionName, std::string itemName) {
+        Store* store = head;
+        while (store != nullptr && store->name != storeName) {
+            store = store->next;
         }
-        if (s == nullptr) {
-            std::cout << "Store not found!\n";
-            return;
-        }
-        Section* sec = s->sections;
-        while (sec != nullptr && sec->name != sectionName) {
-            sec = sec->next;
-        }
-        if (sec == nullptr) {
-            std::cout << "Section not found!\n";
-            return;
-        }
-        Item* curr = sec->items;
-        Item* prev = nullptr;
 
-        while (curr != nullptr && curr->name != itemName) {
-            prev = curr;
-            curr = curr->next;
-        }
-        if (curr == nullptr) {
-            std::cout << "Item not found!\n";
+        if (store == nullptr) {
+            std::cout << "Store not found.\n";
             return;
         }
-        if (prev == nullptr) {
-            sec->items = curr->next;
+        Section* section = store->sections;
+
+        while (section != nullptr && section->name != sectionName) {
+            section = section->next;
+        }
+        if (section == nullptr) {
+            std::cout << "Section not found.\n";
+            return;
+        }
+        Item* current = section->items;
+        Item* previous = nullptr;
+
+        while (current != nullptr && current->name != itemName) {
+            previous = current;
+            current = current->next;
+        }
+        if (current == nullptr) {
+            std::cout << "Item not found.\n";
+            return;
+        }
+        if (previous == nullptr) {
+            section->items = current->next;
         }
         else {
-            prev->next = curr->next;
+            previous->next = current->next;
         }
-        delete curr;
-        std::cout << "Item removed successfully!\n";
+        delete current;
+        std::cout << "Item removed successfully.\n";
     }
 
-    void displaySectionItems(std::string storeName, std::string sectionName) {
-        Store* s = head;
-        while (s != nullptr && s->name != storeName) {
-            s = s->next;
+    void displaySectionItems(std::string storeName,std::string sectionName) {
+        Store* store = head;
+
+        while (store != nullptr && store->name != storeName) {
+            store = store->next;
         }
-        if (s == nullptr) {
-            std::cout << "Store not found!\n";
+        if (store == nullptr) {
+            std::cout << "Store not found.\n";
             return;
         }
-        Section* sec = s->sections;
+        Section* section = store->sections;
 
-        while (sec != nullptr && sec->name != sectionName) {
-            sec = sec->next;
+        while (section != nullptr && section->name != sectionName) {
+            section = section->next;
         }
-        if (sec == nullptr) {
-            std::cout << "Section not found!\n";
+        if (section == nullptr) {
+            std::cout << "Section not found.\n";
             return;
         }
-        Item* curr = sec->items;
-        std::cout << sectionName << ": ";
+        std::cout << section->name << ": ";
+        Item* current = section->items;
 
-        while (curr != nullptr) {
-            std::cout << curr->name << " ";
-            curr = curr->next;
+        while (current != nullptr) {
+            std::cout << current->name << " ";
+            current = current->next;
         }
         std::cout << "\n";
     }
 
-    void displayStoreItems(std::string storeName) {
-        Store* s = head;
-        while (s != nullptr && s->name != storeName) {
-            s = s->next;
-        }
-        if (s == nullptr) {
-            std::cout << "Store not found!\n";
-            return;
-        }
-        Section* sec = s->sections;
-        std::cout << "Store: " << s->name << "\n";
-        while (sec != nullptr) {
-            std::cout << sec->name << ": ";
-            Item* curr = sec->items;
-            while (curr != nullptr) {
-                std::cout << curr->name << " ";
-                curr = curr->next;
+ void displayStoreItems(std::string storeName) {
+    Store* store = head;
+
+    while (store != nullptr && store->name != storeName) {
+        store = store->next;
+    }
+    if (store == nullptr) {
+        std::cout << "Store not found.\n";
+        return;
+      }
+    std::cout << "Store: " << store->name<< " (" << store->city << ")\n";
+    Section* section = store->sections;
+
+    while (section != nullptr) {
+        std::cout << section->name << ": ";
+        Item* current = section->items;
+            while (current != nullptr) {
+                std::cout << current->name << " ";
+                current = current->next;
             }
-            std::cout << "\n";
-            sec = sec->next;
+        std::cout << "\n";
+        section = section->next;
+       }
+    }
+
+~InventoryManagement() {
+    Store* store = head;
+    while (store != nullptr) {
+      Section* section = store->sections;
+        while (section != nullptr) {
+          Item* item = section->items;
+
+            while (item != nullptr) {
+               Item* nextItem = item->next;
+               delete item;
+               item = nextItem;
+              }
+            Section* nextSection = section->next;
+            delete section;
+            section = nextSection;
+            }
+        Store* nextStore = store->next;
+        delete store;
+        store = nextStore;
         }
     }
+};
 
-    };
+int main() {
+    DoublyLinkedList deskList;
+    DoublyLinkedList songList;
+    DoublyLinkedList seats;
+    InventoryManagement inventory;
 
-    int main() {
-        doubly_Linked_List list;
-        doubly_Linked_List songList;
-        InventoryManagement inventory;
-        doubly_Linked_List seats;
+    //Desk Swapping
+    std::cout << "Task 1: Desk Swapping\n";
+    deskList.insertAtEnd("Alice");
+    deskList.insertAtEnd("Bob");
+    deskList.insertAtEnd("Charlie");
+    deskList.insertAtEnd("Dana");
+    deskList.insertAtEnd("Eva");
+    deskList.insertAtEnd("Frank");
 
-        // Task 1: Desk Swapping
-        list.insertAtEnd("Alice");
-        list.insertAtEnd("Bob");
-        list.insertAtEnd("Charlie");
-        list.insertAtEnd("Dana");
-        list.insertAtEnd("Eva");
-        list.insertAtEnd("Frank");
+    std::cout << "Original Desk List: ";
+    deskList.display();
 
-        std::cout << "Original Desk List: ";
-        list.display();
-        std::cout<<"\n";
-        list.swap();
-        
+    deskList.swapFirstAndLast();
 
-        std::cout << "Desk List After Swapping: ";
-        list.display();
-        std::cout<<"\n";
+    std::cout << "Desk List After Swapping: ";
+    deskList.display();
 
-        // Task 2: Music Playlist
-        songList.insertAtEnd("Shape of You");
-        songList.insertAtEnd("Perfect");
-        songList.insertAtEnd("Believer");
-        songList.insertAtEnd("Faded");
+    //Music Playlist
+    std::cout << "\nTask 2: Music Playlist\n";
+    songList.insertAtEnd("Shape of You");
+    songList.insertAtEnd("Perfect");
+    songList.insertAtEnd("Believer");
+    songList.insertAtEnd("Faded");
+    songList.move();
 
-        std::cout << "\nMusic Playlist:\n";
-        songList.move();
-        std::cout<<"\n";
+    //Inventory Mnagement
+    std::cout << "\nTask 3: Inventory Management\n";
+    inventory.addStore("Lahore Store", "Lahore");
+    inventory.addStore("Karachi Store", "Karachi");
 
-        // Task 3: Inventory Management
-        inventory.addStore("Lahore Store", "Lahore");
-        inventory.addStore("Karachi Store", "Karachi");
+    inventory.addSection("Lahore Store", "Toys");
+    inventory.addSection("Lahore Store", "Grocery");
+    inventory.addSection("Karachi Store", "Fruits");
 
-        inventory.addSection("Lahore Store", "Toys");
-        inventory.addSection("Lahore Store", "Grocery");
-        inventory.addSection("Karachi Store", "Fruits");
+    inventory.addItem("Lahore Store", "Toys", "Car");
+    inventory.addItem("Lahore Store", "Toys", "Doll");
+    inventory.addItem("Lahore Store", "Grocery", "Rice");
+    inventory.addItem("Lahore Store", "Grocery", "Sugar");
+    inventory.addItem("Karachi Store", "Fruits", "Apple");
+    inventory.addItem("Karachi Store", "Fruits", "Mango");
 
-        inventory.addItem("Lahore Store", "Toys", "Car");
-        inventory.addItem("Lahore Store", "Toys", "Doll");
-        inventory.addItem("Lahore Store", "Grocery", "Rice");
-        inventory.addItem("Lahore Store", "Grocery", "Sugar");
-        inventory.addItem("Karachi Store", "Fruits", "Apple");
-        inventory.addItem("Karachi Store", "Fruits", "Mango");
+    inventory.displayStoreItems("Lahore Store");
 
-        std::cout << "\nInventory: Lahore Store\n";
-        inventory.displayStoreItems("Lahore Store");
-        std::cout<<"\n";
+    std::cout << "\nItems in Toys Section:\n";
+    inventory.displaySectionItems("Lahore Store", "Toys");
 
-        std::cout << "\nItems in Toys Section:\n";
-        inventory.displaySectionItems("Lahore Store", "Toys");
-        std::cout<<"\n";
+    inventory.removeItem("Lahore Store", "Toys", "Car");
 
-        inventory.removeItem("Lahore Store", "Toys", "Car");
+    std::cout << "Toys After Removing Car:\n";
+    inventory.displaySectionItems("Lahore Store", "Toys");
 
-        std::cout << "\nToys After Removing Car:\n";
-        inventory.displaySectionItems("Lahore Store", "Toys");
-        std::cout<<"\n";
-        
+    //Seat Rearragement
+    std::cout << "\nTask 4: Seat Rearrangement\n";
+    seats.insertAtEnd("1");
+    seats.insertAtEnd("2");
+    seats.insertAtEnd("3");
+    seats.insertAtEnd("4");
+    seats.insertAtEnd("5");
+    seats.insertAtEnd("6");
+    seats.insertAtEnd("7");
+    seats.insertAtEnd("8");
+    seats.insertAtEnd("9");
 
-        seats.insertAtEnd("1");
-        seats.insertAtEnd("2");
-        seats.insertAtEnd("3");
-        seats.insertAtEnd("4");
-        seats.insertAtEnd("5");
-        seats.insertAtEnd("6");
-        seats.insertAtEnd("7");
-        seats.insertAtEnd("8");
-        seats.insertAtEnd("9");
+    std::cout << "Original Seat Arrangement: ";
+    seats.display();
 
-        std::cout << "Original Seat Arrangement:\n";
-        seats.display();
+    seats.rearrangeSeats();
 
-        seats.rearrangeSeats();
+    std::cout << "After Rearranging Seats: ";
+    seats.display();
 
-        std::cout << "After Rearranging Seats:\n";
-        seats.display();
-        std::cout<<"\n";
-
-
-        system("pause");
-        return 0;
-    }
+    
+   return 0;
+}
