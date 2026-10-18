@@ -1,5 +1,4 @@
 #include<iostream>
-#include<stdlib.h>
 
 struct Node
 {
@@ -342,8 +341,5 @@ int main(){
     std::cout<<"\n";
 
     
-
-
-    system("pause");
     return 0;
 }
