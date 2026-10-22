@@ -34,7 +34,7 @@ public:
         head = nullptr;
         current = nullptr;
     }
-
+    //addTask
     void addTask(std::string name, int priority, std::string status) {
         Node* newNode = new Node(name, priority, status);
 
@@ -53,7 +53,7 @@ public:
         }
         std::cout << "Task added: " << name << "\n";
     }
-
+    //removeTask
     void removeTask(std::string name) {
         if (head == nullptr) {
             std::cout << "Task list is empty!\n";
@@ -97,7 +97,7 @@ public:
         delete curr;
         std::cout << "Task removed: " << name << "\n";
     }
-
+    //getNextTask
     void getNextTask() {
         if (head == nullptr) {
             std::cout << "No tasks available!\n";
@@ -131,7 +131,7 @@ public:
             curr = curr->next;
         } while (curr != head);
     }
-
+    //updateStatus
     void updateStatus(std::string name, std::string newStatus) {
         if (head == nullptr) {
             std::cout << "Task list is empty!\n";
@@ -164,7 +164,7 @@ public:
         delete head;
     }
 };
-
+//josephusProblem
 void josephusProblem(int N, int M) {
     if (N <= 0 || M <= 0) {
         std::cout << "N and M must be greater than zero!\n";
