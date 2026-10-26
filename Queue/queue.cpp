@@ -453,6 +453,7 @@ int main() {
     q3.display();
     std::cout << "Dequeued: " << q3.dequeue() << "\n";
     q3.display();
+    
     // Activity 4: Array-Based Deque
     std::cout << "\nActivity 4: Array Deque\n";
     ArrayDeque d1;
@@ -466,6 +467,7 @@ int main() {
     d1.display();
 
     // Lab Task 1: Linked-List Queue
+    
     std::cout << "\nLab Task 1: Linked Queue\n";
     LinkedQueue q6;
     q6.enqueue(10);
@@ -476,6 +478,7 @@ int main() {
     q6.display();
 
     // Lab Task 2: Linked-List Deque
+    
     std::cout << "\nLab Task 2: Linked Deque\n";
     LinkedDeque d2;
     d2.insertAtEnd(10);
