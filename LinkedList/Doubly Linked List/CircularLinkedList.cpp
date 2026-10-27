@@ -1,427 +1,238 @@
-
 #include <iostream>
+#include <string>
 
-struct Node
-{
-    int data;
+struct Node {
+    std::string name;
+    std::string status;
+    int priority;
+    int person;
     Node* next;
+
+    Node(std::string taskName, int taskPriority, std::string taskStatus) {
+        name = taskName;
+        status = taskStatus;
+        priority = taskPriority;
+        person = 0;
+        next = nullptr;
+    }
+
+    Node(int number) {
+        name = "";
+        status = "";
+        priority = 0;
+        person = number;
+        next = nullptr;
+    }
 };
 
-void insertEnd(Node*& head, int value){
-    Node* p = new Node{value, nullptr};
+class CircularLinkedList {
+public:
+    Node* head;
+    Node* current;
 
-    if (head == nullptr){
-        head = p;
-        p->next = head;
-        return;
+    CircularLinkedList() {
+        head = nullptr;
+        current = nullptr;
     }
-    Node* last = head;
 
-    while (last->next != head){
-        last = last->next;
-    }
-    last->next = p;
-    p->next = head;
-}
+    void addTask(std::string name, int priority, std::string status) {
+        Node* newNode = new Node(name, priority, status);
 
-void display(Node* head){
-    if (head == nullptr){
-        std::cout << "List is empty.\n";
-        return;
-    }
-    Node* p = head;
+        if (head == nullptr) {
+            head = newNode;
+            newNode->next = head;
+            current = head;
+        } else {
+            Node* temp = head;
 
-    do{
-        std::cout << p->data << " ";
-        p = p->next;
-    }while (p != head);
-
-    std::cout << "\n";
-}
-
-int searchNode(Node* head, int key){
-    if (head == nullptr){
-        return -1;
-    }
-    Node* p = head;
-    int index = 1;
-
-    do{
-        if (p->data == key){
-            return index;
+            while (temp->next != head) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+            newNode->next = head;
         }
-     p = p->next;
-        index++;
-    } while (p != head);
-
-    return -1;
-}
-
-void insertBefore(Node*& head, int key, int value){
-    if (head == nullptr){
-        std::cout << "List is empty.\n";
-        return;
+        std::cout << "Task added: " << name << "\n";
     }
-    Node* p = new Node{value, nullptr};
 
-    if (head->data == key){
-        Node* last = head;
-
-        while (last->next != head){
-            last = last->next;
+    void removeTask(std::string name) {
+        if (head == nullptr) {
+            std::cout << "Task list is empty!\n";
+            return;
         }
-        p->next = head;
-        last->next = p;
-        head = p;
-        return;
-    }
-    Node* prev = head;
-    Node* curr = head->next;
+        Node* curr = head;
+        Node* prev = nullptr;
 
-    while (curr != head && curr->data != key){
-        prev = curr;
-        curr = curr->next;
-    }
+        do {
+            if (curr->name == name) {
+                break;
+            }
+            prev = curr;
+            curr = curr->next;
+        } while (curr != head);
 
-    if (curr == head){
-        delete p;
-        std::cout << "Key not found.\n";
-        return;
-    }
-    prev->next = p;
-    p->next = curr;
-}
-
-void insertAfter(Node* head, int key, int value){
-    if (head == nullptr){
-        std::cout << "List is empty.\n";
-        return;
-    }
-    Node* curr = head;
-
-    do{
-        if (curr->data == key){
-            Node* p = new Node{value, curr->next};
-            curr->next = p;
+        if (curr->name != name) {
+            std::cout << "Task not found!\n";
             return;
         }
 
-        curr = curr->next;
-    } while (curr != head);
-
-    std::cout << "Key not found.\n";
-}
-
-void deleteNode(Node*& head, int key)
-{
-    if (head == nullptr){
-        std::cout << "List is empty.\n";
-        return;
-    }
-    Node* curr = head;
-    Node* prev = nullptr;
-
-    do{
-        if (curr->data == key){
-            if (curr->next == curr){
-                delete curr;
-                head = nullptr;
-                return;
-            }
-            if (curr == head){
+        if (curr->next == curr) {
+            head = nullptr;
+            current = nullptr;
+        } else {
+            if (curr == head) {
                 Node* last = head;
 
-                while (last->next != head){
+                while (last->next != head) {
                     last = last->next;
                 }
                 head = head->next;
                 last->next = head;
-            }
-            else{
+            } else {
                 prev->next = curr->next;
             }
-            delete curr;
+            if (current == curr) {
+                current = curr->next;
+            }
+        }
+        delete curr;
+        std::cout << "Task removed: " << name << "\n";
+    }
+
+    void getNextTask() {
+        if (head == nullptr) {
+            std::cout << "No tasks available!\n";
             return;
         }
-        prev = curr;
-        curr = curr->next;
-    } while (curr != head);
+        Node* start = current;
+        do {
+            if (current->status == "Pending") {
+                std::cout << "Next Task: " << current->name << "\n";
+                std::cout << "Priority: " << current->priority << "\n";
 
-    std::cout << "Key not found.\n";
-}
-
-void deleteAll(Node*& head){
-    if (head == nullptr){
-        std::cout << "List is already empty.\n";
-        return;
-    }
-    Node* curr = head->next;
-
-    while (curr != head){
-        Node* temp = curr;
-        curr = curr->next;
-        delete temp;
-    }
-    delete head;
-    head = nullptr;
-
-    std::cout << "All nodes deleted.\n";
-}
-
-void deleteEvenOddValues(Node*& head, bool even){
-    if (head == nullptr){
-        std::cout << "List is empty.\n";
-        return;
+                current = current->next;
+                return;
+            }
+            current = current->next;
+        } while (current != start);
+        std::cout << "No pending tasks available!\n";
     }
 
-    while (head != nullptr &&((head->data % 2 == 0) == even)){
-        if (head->next == head){
-            delete head;
-            head = nullptr;
+    void displayTasks() {
+        if (head == nullptr) {
+            std::cout << "No tasks available!\n";
             return;
         }
-        Node* last = head;
+        Node* curr = head;
+        do {
+            std::cout << "Task: " << curr->name
+                      << ", Priority: " << curr->priority
+                      << ", Status: " << curr->status << "\n";
 
-        while (last->next != head){
-            last = last->next;
-        }
-        Node* temp = head;
-        head = head->next;
-        last->next = head;
-        delete temp;
-    }
-    if (head == nullptr){
-        return;
-    }
-    Node* prev = head;
-    Node* curr = head->next;
-
-    while (curr != head){
-        if ((curr->data % 2 == 0) == even){
-            prev->next = curr->next;
-            delete curr;
-            curr = prev->next;
-        }
-        else{
-            prev = curr;
             curr = curr->next;
-        }
+        } while (curr != head);
     }
-}
 
-void josephus(int n, int k){
-    if (n <= 0 || k <= 0)
-    {
-        std::cout << "Enter positive values.\n";
+    void updateStatus(std::string name, std::string newStatus) {
+        if (head == nullptr) {
+            std::cout << "Task list is empty!\n";
+            return;
+        }
+        Node* curr = head;
+
+        do {
+            if (curr->name == name) {
+               curr->status = newStatus;
+               std::cout << "Task: " << curr->name
+                          << ", Updated Status: " << curr->status << "\n";
+                return;
+            }
+            curr = curr->next;
+        } while (curr != head);
+        std::cout << "Task not found!\n";
+    }
+
+    ~CircularLinkedList() {
+        if (head == nullptr) {
+            return;
+        }
+        Node* curr = head->next;
+        while (curr != head) {
+            Node* nextNode = curr->next;
+            delete curr;
+            curr = nextNode;
+        }
+        delete head;
+    }
+};
+
+void josephusProblem(int N, int M) {
+    if (N <= 0 || M <= 0) {
+        std::cout << "N and M must be greater than zero!\n";
         return;
     }
-    Node* head = nullptr;
+    Node* head = new Node(1);
+    Node* last = head;
 
-    for (int i = 1; i <= n; i++){
-        insertEnd(head, i);
+    for (int i = 2; i <= N; i++) {
+        Node* newNode = new Node(i);
+        last->next = newNode;
+        last = newNode;
     }
-    Node* prev = head;
-
-    while (prev->next != head){
-        prev = prev->next;
-    }
+    last->next = head;
     Node* curr = head;
+    Node* prev = last;
 
-    while (curr->next != curr){
-        for (int count = 1; count < k; count++){
+    while (curr->next != curr) {
+        for (int i = 1; i < M; i++) {
             prev = curr;
             curr = curr->next;
         }
         prev->next = curr->next;
-
-        if (curr == head){
-            head = curr->next;
-        }
         delete curr;
         curr = prev->next;
     }
-    std::cout << "Survivor: " << curr->data << "\n";
-
+    std::cout << "Survivor is person " << curr->person << "\n";
     delete curr;
-    head = nullptr;
 }
 
-void deleteEvenPositions(Node*& head){
-    if (head == nullptr || head->next == head){
-        std::cout << "No even-positioned nodes to delete.\n";
-        return;
-    }
-    Node* prev = head;
-    Node* curr = head->next;
-    int position = 2;
+int main() {
+    CircularLinkedList tasks;
 
-    while (curr != head){
-        if (position % 2 == 0){
-            prev->next = curr->next;
-            delete curr;
-            curr = prev->next;
-        }
-        else{
-            prev = curr;
-            curr = curr->next;
-        }
-        position++;
-    }
-}
+    //Josephus Problem
+    std::cout << "Activity 1: Josephus Problem\n";
+    josephusProblem(7, 3);
 
-int main(){
+    //Add Tasks
+    std::cout << "\nActivity 2: Add Tasks\n";
+    tasks.addTask("Design", 1, "Pending");
+    tasks.addTask("Coding", 2, "Pending");
+    tasks.addTask("Testing", 3, "Completed");
 
-    Node* head = nullptr;
-    int choice, value, key, n, k, position;
+    //Display All Tasks
+    std::cout << "\nActivity 3: Display All Tasks\n";
+    tasks.displayTasks();
 
-    do{
-        std::cout << "\n===== CIRCULAR LINKED LIST =====\n";
-        std::cout << "1. Activity 1: Creation\n";
-        std::cout << "2. Activity 2: Access and Search\n";
-        std::cout << "3. Activity 3: Insertion Before a Node\n";
-        std::cout << "4. Activity 3: Insertion After a Node\n";
-        std::cout << "5. Activity 4: Delete a Node\n";
-        std::cout << "6. Activity 5: Delete Complete List\n";
-        std::cout << "7. Lab Task 1: Delete Even/Odd Values\n";
-        std::cout << "8. Lab Task 2: Josephus Problem\n";
-        std::cout << "9. Lab Task 3: Delete Even Positions\n";
-        std::cout << "10. Display List\n";
-        std::cout << "0. Exit\n";
-        std::cout << "Enter choice: ";
-        std::cin >> choice;
+    //Get Next Task
+    std::cout << "\nActivity 4: Get Next Task\n";
+    tasks.getNextTask();
 
-        //switch condition
-        switch (choice){
-        case 1:
-            std::cout << "\nActivity 1: Creation of Circular Linked List\n";
-            std::cout << "How many nodes? ";
-            std::cin >> n;
+    //Update Task Status
+    std::cout << "\nActivity 5: Update Task Status\n";
+    tasks.updateStatus("Design", "Completed");
 
-            for (int i = 1; i <= n; i++){
-                std::cout << "Enter value for node " << i << ": ";
-                std::cin >> value;
-                insertEnd(head, value);
-            }
+    //Get Next Task Again
+    std::cout << "\nActivity 6: Get Next Task Again\n";
+    tasks.getNextTask();
 
-            std::cout << "Circular linked list: ";
-            display(head);
-            break;
+    //Remove a Task
+    std::cout << "\nActivity 7: Remove a Task\n";
+    tasks.removeTask("Coding");
 
-        case 2:
-            std::cout << "\nActivity 2: Accessing and Searching Nodes\n";
-            std::cout << "List: ";
-            display(head);
+    // Display Remaining Tasks
+    std::cout << "\nActivity 8: Display Remaining Tasks\n";
+    tasks.displayTasks();
 
-            std::cout << "Enter value to search: ";
-            std::cin >> key;
 
-            position = searchNode(head, key);
 
-            if (position != -1){
-                std::cout << "Node found at index: " << position << "\n";
-            }
-            else{
-                std::cout << "Value not found.\n";
-            }
-            break;
-
-        case 3:
-            std::cout << "\nActivity 3: Insertion Before a Node\n";
-            std::cout << "Enter key: ";
-            std::cin >> key;
-            std::cout << "Enter new value: ";
-            std::cin >> value;
-
-            insertBefore(head, key, value);
-
-            std::cout << "Updated list: ";
-            display(head);
-            break;
-
-       case 4:
-            std::cout << "\nActivity 3: Insertion After a Node\n";
-            std::cout << "Enter key: ";
-            std::cin >> key;
-            std::cout << "Enter new value: ";
-            std::cin >> value;
-
-            insertAfter(head, key, value);
-
-            std::cout << "Updated list: ";
-            display(head);
-            break;
-
-          case 5:
-            std::cout << "\nActivity 4: Deleting a Node\n";
-            std::cout << "Enter value to delete: ";
-            std::cin >> key;
-
-            deleteNode(head, key);
-
-            std::cout << "Updated list: ";
-            display(head);
-            break;
-
-        case 6:
-            std::cout << "\nActivity 5: Complete Deletion\n";
-            deleteAll(head);
-            display(head);
-            break;
-
-      case 7:
-            std::cout << "\nLab Task 1: Delete Even/Odd Values\n";
-            std::cout << "1. Delete even values\n";
-            std::cout << "2. Delete odd values\n";
-            std::cout << "Enter choice: ";
-            std::cin >> key;
-
-            if (key == 1){
-                deleteEvenOddValues(head, true);
-            }
-            else if (key == 2){
-                deleteEvenOddValues(head, false);
-            }
-            else{
-                std::cout << "Invalid choice.\n";
-                break;
-            }
-
-            std::cout << "Updated list: ";
-            display(head);
-            break;
-
-     case 8:
-            std::cout << "\nLab Task 2: Josephus Problem\n";
-            std::cout << "Enter number of people: ";
-            std::cin >> n;
-            std::cout << "Enter counting number k: ";
-            std::cin >> k;
-
-            josephus(n, k);
-            break;
-
-        case 9:
-            std::cout << "\nLab Task 3: Delete Even-Positioned Nodes\n";
-            deleteEvenPositions(head);
-
-            std::cout << "Updated list: ";
-            display(head);
-            break;
-
-      case 10:
-            std::cout << "\nCircular Linked List:\n";
-            display(head);
-            break;
-
-        case 0:
-            std::cout << "\nExiting program.\n";
-            deleteAll(head);
-            break;
-
-        default:
-            std::cout << "Invalid choice.\n";
-        }
-    }while (choice != 0);
-
-    return 0;
+   return 0;
 }
