@@ -116,7 +116,7 @@ public:
         } while (current != start);
         std::cout << "No pending tasks available!\n";
     }
-
+   //display function
     void displayTasks() {
         if (head == nullptr) {
             std::cout << "No tasks available!\n";
@@ -150,7 +150,7 @@ public:
         } while (curr != head);
         std::cout << "Task not found!\n";
     }
-
+    //destructor
     ~CircularLinkedList() {
         if (head == nullptr) {
             return;
